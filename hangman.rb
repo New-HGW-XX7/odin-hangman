@@ -76,15 +76,17 @@ puts 'Do you want to load?'
 if gets.chomp == 'y'
   word = Word.load_game 
 else
-word = Word.new("sau")
+  random_word = File.open("wordlist.txt", "r") { |list| list.select { |word| word.length > 4 and word.length < 13 }.sample.chomp }
+  p random_word
+  word = Word.new(random_word)
 end
 
 word.draw
 
 
 while word.attempts_left > 0
-  puts "Do you wish to save your game? Press 'y'. Else press any other button"
-  word.save_game if gets.chomp == 'y'
+  #puts "Do you wish to save your game? Press 'y'. Else press any other button"
+  #word.save_game if gets.chomp == 'y'
 
   puts "\nAttempts left: #{word.attempts_left}"
   puts "\nLetters used: #{[word.letters_guessed, word.letters_wrong].flatten}" if [word.letters_guessed, word.letters_wrong].flatten.empty? == false
