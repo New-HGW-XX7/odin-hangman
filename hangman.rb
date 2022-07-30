@@ -53,15 +53,15 @@ class Word
     })
   end
 
-  def save_game
+  def save_game(filename)
     data = self.create_yaml
-    save = File.open("save.txt", "w")
+    save = File.open("#{filename}.txt", "w")
     save.puts data
     save.close
   end
 
-  def self.load_game
-    data_yaml = File.open("save.txt", "r")
+  def self.load_game(filename)
+    data_yaml = File.open("#{filename}.txt", "r")
     data = YAML.load(data_yaml)
     #p data_yaml
     #p data
@@ -72,21 +72,26 @@ class Word
 end
 
 
-puts 'Do you want to load?'
+puts "Do you wish to load? Press 'y'"
 if gets.chomp == 'y'
-  word = Word.load_game 
+  puts "Enter the name of the file without extension. 'wordlist' can't be loaded"
+  puts Dir.glob('*.{txt}').join(",\n")
+  word = Word.load_game(gets.chomp)
 else
   random_word = File.open("wordlist.txt", "r") { |list| list.select { |word| word.length > 4 and word.length < 13 }.sample.chomp }
-  p random_word
   word = Word.new(random_word)
+  puts 'Random word selected'
 end
 
 word.draw
 
 
 while word.attempts_left > 0
-  #puts "Do you wish to save your game? Press 'y'. Else press any other button"
-  #word.save_game if gets.chomp == 'y'
+  puts "Do you wish to save your game? Press 'y'. Else press any other button"
+  if gets.chomp == 'y'
+    puts "Please enter the name of your savestate"
+    word.save_game(gets.chomp)
+  end
 
   puts "\nAttempts left: #{word.attempts_left}"
   puts "\nLetters used: #{[word.letters_guessed, word.letters_wrong].flatten}" if [word.letters_guessed, word.letters_wrong].flatten.empty? == false

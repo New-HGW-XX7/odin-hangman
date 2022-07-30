@@ -1,0 +1,21 @@
+---
+:word_a:
+- p
+- r
+- e
+- d
+- i
+- c
+- t
+:word_flex:
+- p
+- r
+- d
+- i
+- c
+- t
+:attempts_left: 4
+:letters_guessed:
+- e
+:letters_wrong:
+- a
