@@ -5,12 +5,12 @@ class Word
   attr_accessor :attempts_left
 
 
-  def initialize(word)
+  def initialize(word, word_flex = Array.new(word.split('')), attempts_left = 5, letters_guessed = [], letters_wrong = [])
     @word_a = word.split('')
-    @word_flex = Array.new(word.split(''))
-    @attempts_left = 5
-    @letters_guessed = []
-    @letters_wrong =[]
+    @word_flex = word_flex
+    @attempts_left = attempts_left
+    @letters_guessed = letters_guessed
+    @letters_wrong = letters_wrong
   end
 
   def draw
@@ -21,6 +21,7 @@ class Word
         print "_ "
       end
     end
+    puts "\n"
   end
 
   def check_double(char)
@@ -58,15 +59,31 @@ class Word
     save.puts data
     save.close
   end
+
+  def self.load_game
+    data_yaml = File.open("save.txt", "r")
+    data = YAML.load(data_yaml)
+    #p data_yaml
+    #p data
+    data[:word_a] = data[:word_a].join('')
+    
+    self.new(data[:word_a], data[:word_flex], data[:attempts_left], data[:letters_guessed], data[:letters_wrong])
+  end
 end
 
-#puts "Enemy player, choose a word."
-word = Word.new("hi")
+
+puts 'Do you want to load?'
+if gets.chomp == 'y'
+  word = Word.load_game 
+else
+word = Word.new("sau")
+end
+
 word.draw
 
 
 while word.attempts_left > 0
-  puts "Do you wish to save your game? Press 'y'"
+  puts "Do you wish to save your game? Press 'y'. Else press any other button"
   word.save_game if gets.chomp == 'y'
 
   puts "\nAttempts left: #{word.attempts_left}"
