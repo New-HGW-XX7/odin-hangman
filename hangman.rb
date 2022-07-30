@@ -1,3 +1,4 @@
+require 'yaml'
 class Word
 
   attr_reader :word_a, :word_flex, :letters_guessed, :letters_wrong
@@ -41,8 +42,21 @@ class Word
     end
   end
 
-  def self.save_game
-    YAML.dump
+  def create_yaml
+    YAML.dump ({
+      word_a: @word_a,
+      word_flex: @word_flex,
+      attempts_left: @attempts_left,
+      letters_guessed: @letters_guessed,
+      letters_wrong: @letters_wrong
+    })
+  end
+
+  def save_game
+    data = self.create_yaml
+    save = File.open("save.txt", "w")
+    save.puts data
+    save.close
   end
 end
 
@@ -52,6 +66,9 @@ word.draw
 
 
 while word.attempts_left > 0
+  puts "Do you wish to save your game? Press 'y'"
+  word.save_game if gets.chomp == 'y'
+
   puts "\nAttempts left: #{word.attempts_left}"
   puts "\nLetters used: #{[word.letters_guessed, word.letters_wrong].flatten}" if [word.letters_guessed, word.letters_wrong].flatten.empty? == false
   puts "Choose a letter."
